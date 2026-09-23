@@ -1,0 +1,1561 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پرهام لند - پارادایس برنامه‌نویسی</title>
+    <style>
+        /* ===== RESET & BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0a1a;
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+        /* ===== BACKGROUND ===== */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(125deg, #0a0a1a, #1a0a2e, #2d1b4e, #1a0a2e, #0a0a1a);
+            overflow: hidden;
+        }
+
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            top: -50%;
+            left: -50%;
+            background:
+                radial-gradient(ellipse at 20% 50%, rgba(108, 60, 225, 0.3) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 50%, rgba(232, 62, 140, 0.3) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 20%, rgba(0, 212, 255, 0.2) 0%, transparent 50%);
+            animation: rotateBg 40s linear infinite;
+            filter: blur(80px);
+        }
+
+        @keyframes rotateBg {
+            0% {
+                transform: rotate(0deg) scale(1);
+            }
+            50% {
+                transform: rotate(180deg) scale(1.2);
+            }
+            100% {
+                transform: rotate(360deg) scale(1);
+            }
+        }
+
+        /* ===== NAVBAR ===== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(10, 10, 26, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .nav-logo {
+            font-size: 24px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 30px;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* ===== MAIN ===== */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 15px 30px;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-title {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+
+        /* ===== GLASS CARD ===== */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 25px;
+            margin-bottom: 25px;
+            transition: all 0.3s;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn {
+            display: inline-block;
+            padding: 10px 25px;
+            border: none;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #fff;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            box-shadow: 0 8px 25px rgba(108, 60, 225, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(108, 60, 225, 0.5);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            box-shadow: 0 8px 25px rgba(232, 62, 140, 0.3);
+        }
+
+        .btn-accent {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.3);
+        }
+
+        .btn-green {
+            background: linear-gradient(135deg, #43e97b, #38f9d7);
+            color: #0a0a1a;
+            box-shadow: 0 8px 25px rgba(67, 233, 123, 0.3);
+        }
+
+        /* ===== GAME BOARDS ===== */
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .game-board {
+            display: grid;
+            gap: 4px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 8px;
+            border-radius: 16px;
+        }
+
+        .game-board[data-game="tic-tac-toe"] {
+            grid-template-columns: repeat(3, 90px);
+            grid-template-rows: repeat(3, 90px);
+        }
+
+        .game-board[data-game="chess"] {
+            grid-template-columns: repeat(8, 55px);
+            grid-template-rows: repeat(8, 55px);
+        }
+
+        .cell {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .cell:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: scale(1.05);
+        }
+
+        .cell.x {
+            color: #00d4ff;
+        }
+        .cell.o {
+            color: #f5576c;
+        }
+
+        .cell.chess-white {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .cell.chess-black {
+            background: rgba(0, 0, 0, 0.4);
+        }
+        .cell.chess-piece {
+            font-size: 30px;
+        }
+        .cell.selected {
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+            border: 2px solid #00d4ff;
+        }
+        .cell.valid-move {
+            background: rgba(0, 212, 255, 0.2) !important;
+        }
+
+        .game-status {
+            font-size: 18px;
+            font-weight: 600;
+            padding: 10px 25px;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .game-controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        /* ===== SNAKE CANVAS ===== */
+        .snake-canvas {
+            border-radius: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 450px;
+            aspect-ratio: 1;
+        }
+
+        /* ===== TUTORIAL ===== */
+        .tutorial-content {
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 16px;
+            max-height: 450px;
+            overflow-y: auto;
+        }
+
+        .tutorial-content::-webkit-scrollbar {
+            width: 6px;
+        }
+        .tutorial-content::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        .tutorial-content::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 10px;
+        }
+
+        .code-block {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 15px;
+            border-radius: 12px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            overflow-x: auto;
+            border-left: 3px solid #00d4ff;
+            color: #a8d8ea;
+            direction: ltr;
+            text-align: left;
+            user-select: text;
+            -webkit-user-select: text;
+        }
+
+        /* ===== BOT CARDS ===== */
+        .bot-card {
+            text-align: center;
+            padding: 25px;
+        }
+
+        .bot-card .bot-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-bottom: 12px;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            margin: 0 auto 12px;
+        }
+
+        .bot-card:hover .bot-icon {
+            transform: scale(1.1) rotate(5deg);
+            border-color: #00d4ff;
+        }
+
+        .bot-card h3 {
+            font-size: 20px;
+            margin: 10px 0;
+        }
+
+        .bot-card p {
+            color: rgba(255, 255, 255, 0.6);
+            margin: 10px 0;
+        }
+
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 15px 25px;
+            color: #fff;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            transform: translateX(120%);
+            transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 9999;
+            max-width: 350px;
+            cursor: pointer;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast-title {
+            font-weight: 700;
+            font-size: 16px;
+        }
+        .toast-message {
+            opacity: 0.8;
+            font-size: 13px;
+        }
+
+        /* ===== LOADING ===== */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0a0a1a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+            transition: opacity 0.8s, visibility 0.8s;
+        }
+
+        .loading-screen.hide {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top: 4px solid #00d4ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loader-text {
+            margin-top: 15px;
+            font-size: 16px;
+            opacity: 0.7;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 10px 15px;
+            }
+            .nav-links {
+                justify-content: center;
+            }
+            .nav-links a {
+                font-size: 12px;
+                padding: 5px 10px;
+            }
+            .main-container {
+                padding: 100px 10px 20px;
+            }
+            .section-title {
+                font-size: 26px;
+            }
+            .game-board[data-game="tic-tac-toe"] {
+                grid-template-columns: repeat(3, 75px);
+                grid-template-rows: repeat(3, 75px);
+            }
+            .game-board[data-game="chess"] {
+                grid-template-columns: repeat(8, 40px);
+                grid-template-rows: repeat(8, 40px);
+            }
+            .cell.chess-piece {
+                font-size: 22px;
+            }
+            .grid-3,
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .game-board[data-game="tic-tac-toe"] {
+                grid-template-columns: repeat(3, 60px);
+                grid-template-rows: repeat(3, 60px);
+            }
+            .game-board[data-game="chess"] {
+                grid-template-columns: repeat(8, 32px);
+                grid-template-rows: repeat(8, 32px);
+            }
+            .cell.chess-piece {
+                font-size: 18px;
+            }
+            .cell {
+                font-size: 28px;
+            }
+        }
+
+        /* ===== UTILITY ===== */
+        .text-center {
+            text-align: center;
+        }
+        .mt-20 {
+            margin-top: 20px;
+        }
+        .mb-20 {
+            margin-bottom: 20px;
+        }
+        .flex-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .op-6 {
+            opacity: 0.6;
+        }
+        .w-full {
+            width: 100%;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a1a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 10px;
+        }
+
+        /* ===== PRINT BLOCK ===== */
+        @media print {
+            body * {
+                display: none !important;
+            }
+            body::after {
+                content: "چاپ این صفحه مجاز نیست.";
+                display: block;
+                font-size: 24px;
+                text-align: center;
+                padding-top: 50px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== LOADING ===== -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loader"></div>
+        <div class="loader-text">🚀 پرهام لند در حال بارگذاری...</div>
+    </div>
+
+    <!-- ===== BACKGROUND ===== -->
+    <div class="bg-animation"></div>
+
+    <!-- ===== TOAST ===== -->
+    <div class="toast" id="toast">
+        <div class="toast-title" id="toastTitle">✅ موفق</div>
+        <div class="toast-message" id="toastMessage">عملیات با موفقیت انجام شد</div>
+    </div>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar">
+        <span class="nav-logo" onclick="showSection('home')">🚀 پرهام لند</span>
+        <div class="nav-links">
+            <a class="active" onclick="showSection('home')">🏠 خانه</a>
+            <a onclick="showSection('games')">🎮 بازی‌ها</a>
+            <a onclick="showSection('python')">🐍 پایتون</a>
+            <a onclick="showSection('html-tutorial')">🌐 HTML</a>
+            <a onclick="showSection('bots')">🤖 ربات</a>
+        </div>
+    </nav>
+
+    <!-- ===== MAIN ===== -->
+    <div class="main-container">
+
+        <!-- HOME -->
+        <div class="section active" id="home">
+            <h1 class="section-title">به پرهام لند خوش آمدید</h1>
+            <p class="section-subtitle">پارادایس برنامه‌نویسی و بازی‌های هوشمند</p>
+            <div class="grid-3">
+                <div class="glass-card text-center">
+                    <div style="font-size: 50px;">🎮</div>
+                    <h3>بازی‌های تعاملی</h3>
+                    <p class="op-6">مار، تیک تاک تو، شطرنج</p>
+                    <button class="btn mt-20" onclick="showSection('games')">ورود به بازی‌ها</button>
+                </div>
+                <div class="glass-card text-center">
+                    <div style="font-size: 50px;">🐍</div>
+                    <h3>آموزش پایتون</h3>
+                    <p class="op-6">از صفر تا صد با مثال</p>
+                    <button class="btn btn-secondary mt-20" onclick="showSection('python')">شروع آموزش</button>
+                </div>
+                <div class="glass-card text-center">
+                    <div style="font-size: 50px;">🤖</div>
+                    <h3>ساخت ربات</h3>
+                    <p class="op-6">تلگرام و بله</p>
+                    <button class="btn btn-accent mt-20" onclick="showSection('bots')">ساخت ربات</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- GAMES -->
+        <div class="section" id="games">
+            <h1 class="section-title">🎮 بازی‌ها</h1>
+            <p class="section-subtitle">بازی‌های کلاسیک با طراحی مدرن</p>
+
+            <!-- Tic Tac Toe -->
+            <div class="glass-card">
+                <h3 class="text-center">❌ تیک تاک تو ⭕</h3>
+                <div class="game-container">
+                    <div class="game-board" data-game="tic-tac-toe" id="tttBoard"></div>
+                    <div class="game-status" id="tttStatus">نوبت: ❌</div>
+                    <div class="game-controls">
+                        <button class="btn btn-secondary" onclick="resetTicTacToe()">🔄 جدید</button>
+                        <button class="btn btn-accent" onclick="setTTTMode('easy')">🤖 آسان</button>
+                        <button class="btn" onclick="setTTTMode('hard')">🧠 سخت</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Snake -->
+            <div class="glass-card">
+                <h3 class="text-center">🐍 بازی مار</h3>
+                <div class="game-container">
+                    <canvas id="snakeCanvas" class="snake-canvas"></canvas>
+                    <div class="game-status" id="snakeStatus">امتیاز: ۰</div>
+                    <div class="game-controls">
+                        <button class="btn btn-secondary" onclick="startSnake()">▶ شروع</button>
+                        <button class="btn" onclick="pauseSnake()">⏸ توقف</button>
+                        <button class="btn btn-accent" onclick="resetSnakeGame()">🔄 ریست</button>
+                    </div>
+                    <div class="flex-center op-6" style="font-size:13px;">
+                        ⬆ ⬇ ⬅ ➡ (کلیدهای جهت‌نما)
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chess -->
+            <div class="glass-card">
+                <h3 class="text-center">♟ شطرنج</h3>
+                <div class="game-container">
+                    <div class="game-board" data-game="chess" id="chessBoard"></div>
+                    <div class="game-status" id="chessStatus">نوبت: سفید</div>
+                    <div class="game-controls">
+                        <button class="btn btn-secondary" onclick="resetChess()">🔄 جدید</button>
+                        <button class="btn btn-accent" onclick="setChessMode('computer')">🤖 با کامپیوتر</button>
+                        <button class="btn" onclick="setChessMode('two-player')">👥 دونفره</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PYTHON -->
+        <div class="section" id="python">
+            <h1 class="section-title">🐍 آموزش پایتون</h1>
+            <p class="section-subtitle">آموزش جامع پایتون از مقدماتی تا پیشرفته</p>
+            <div class="glass-card">
+                <div class="tutorial-content">
+                    <h3>📘 مقدمه</h3>
+                    <div class="code-block">
+                        # اولین برنامه<br>
+                        print("سلام، پرهام لند!")
+                    </div>
+
+                    <h3>📘 متغیرها</h3>
+                    <div class="code-block">
+                        name = "پرهام"<br>
+                        age = 25<br>
+                        is_pro = True<br>
+                        print(f"{name} {age} ساله است")
+                    </div>
+
+                    <h3>📘 حلقه‌ها</h3>
+                    <div class="code-block">
+                        for i in range(5):<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;print(f"شماره {i}")
+                    </div>
+
+                    <h3>📘 توابع</h3>
+                    <div class="code-block">
+                        def greet(name):<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;return f"سلام {name}!"
+                    </div>
+
+                    <h3>📘 کلاس‌ها</h3>
+                    <div class="code-block">
+                        class Person:<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;def __init__(self, name):<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.name = name
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- HTML -->
+        <div class="section" id="html-tutorial">
+            <h1 class="section-title">🌐 آموزش HTML</h1>
+            <p class="section-subtitle">آموزش کامل HTML از مبتدی تا حرفه‌ای</p>
+            <div class="glass-card">
+                <div class="tutorial-content">
+                    <h3>📘 ساختار اصلی</h3>
+                    <div class="code-block">
+                        &lt;!DOCTYPE html&gt;<br>
+                        &lt;html&gt;<br>
+                        &lt;head&gt;&lt;title&gt;صفحه من&lt;/title&gt;&lt;/head&gt;<br>
+                        &lt;body&gt;<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&lt;h1&gt;سلام!&lt;/h1&gt;<br>
+                        &lt;/body&gt;<br>
+                        &lt;/html&gt;
+                    </div>
+
+                    <h3>📘 تگ‌های پرکاربرد</h3>
+                    <div class="code-block">
+                        &lt;h1&gt;عنوان اصلی&lt;/h1&gt;<br>
+                        &lt;p&gt;متن پاراگراف&lt;/p&gt;<br>
+                        &lt;a href="#"&gt;لینک&lt;/a&gt;<br>
+                        &lt;img src="pic.jpg" alt="تصویر"&gt;
+                    </div>
+
+                    <h3>📘 فرم‌ها</h3>
+                    <div class="code-block">
+                        &lt;form&gt;<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&lt;input type="text"&gt;<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&lt;button&gt;ارسال&lt;/button&gt;<br>
+                        &lt;/form&gt;
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BOTS -->
+        <div class="section" id="bots">
+            <h1 class="section-title">🤖 ساخت ربات</h1>
+            <p class="section-subtitle">ساخت ربات‌های هوشمند برای پلتفرم‌های مختلف</p>
+
+            <div class="grid-2">
+                <div class="glass-card bot-card">
+                    <div class="bot-icon">📱</div>
+                    <h3>🤖 ربات تلگرام</h3>
+                    <p>با استفاده از BotFather و python-telegram-bot</p>
+                    <button class="btn btn-accent" onclick="showBotDetails('telegram')">مشاهده آموزش</button>
+                </div>
+                <div class="glass-card bot-card">
+                    <div class="bot-icon">💬</div>
+                    <h3>🤖 ربات بله</h3>
+                    <p>با استفاده از API اختصاصی بله</p>
+                    <button class="btn btn-secondary" onclick="showBotDetails('bale')">مشاهده آموزش</button>
+                </div>
+            </div>
+
+            <div class="glass-card" id="botDetails" style="display:none;">
+                <h3 id="botDetailTitle">📘 آموزش ساخت ربات</h3>
+                <div id="botDetailContent" class="tutorial-content"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ===== JAVASCRIPT ===== -->
+    <script>
+        // =============================================
+        // SECURITY LOCK (راست‌کلیک و کلیدهای میانبر)
+        // =============================================
+        (function() {
+            // 1) غیرفعال کردن راست‌کلیک
+            document.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+                return false;
+            }, true);
+
+            // 2) غیرفعال کردن کلیدهای میانبر
+            document.addEventListener('keydown', function(e) {
+                const k = (e.key || '').toUpperCase();
+                const ctrl = e.ctrlKey || e.metaKey;
+
+                if (
+                    k === 'F12' ||
+                    (ctrl && e.shiftKey && ['I', 'J', 'C', 'K'].includes(k)) ||
+                    (ctrl && ['U', 'S', 'P'].includes(k))
+                ) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    showToast('🔒 قفل', 'این عملیات غیرفعال است');
+                    return false;
+                }
+            }, true);
+
+            // 3) غیرفعال کردن کپی و برش (فقط روی بدنه اصلی، نه کدها)
+            document.addEventListener('copy', function(e) {
+                // اجازه کپی از code-block
+                if (e.target.closest && e.target.closest('.code-block')) return true;
+                e.preventDefault();
+                showToast('🔒 قفل', 'کپی محتوا غیرفعال است');
+                return false;
+            });
+
+            // 4) غیرفعال کردن درگ تصاویر
+            document.addEventListener('dragstart', function(e) {
+                if (e.target.tagName === 'IMG') {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+
+            // 5) نمایش هشدار یکبار
+            let warned = false;
+            document.addEventListener('contextmenu', function() {
+                if (!warned) {
+                    warned = true;
+                    setTimeout(() => { warned = false; }, 3000);
+                }
+            });
+        })();
+
+        // =============================================
+        // LOADING
+        // =============================================
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                document.getElementById('loadingScreen').classList.add('hide');
+            }, 600);
+            showToast('🚀 پرهام لند', 'به پرهام لند خوش آمدید!');
+        });
+
+        // =============================================
+        // TOAST
+        // =============================================
+        function showToast(title, message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastTitle').textContent = title;
+            document.getElementById('toastMessage').textContent = message;
+            toast.classList.add('show');
+            clearTimeout(toast._timeout);
+            toast._timeout = setTimeout(() => toast.classList.remove('show'), 3500);
+        }
+
+        document.getElementById('toast').addEventListener('click', function() {
+            this.classList.remove('show');
+        });
+
+        // =============================================
+        // NAVIGATION
+        // =============================================
+        function showSection(id) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+            document.querySelectorAll('.nav-links a').forEach(a => {
+                const map = { home: 'خانه', games: 'بازی', python: 'پایتون', 'html-tutorial': 'HTML', bots: 'ربات' };
+                if (a.textContent.includes(map[id] || '')) a.classList.add('active');
+            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key >= '1' && e.key <= '5') {
+                e.preventDefault();
+                const sections = ['home', 'games', 'python', 'html-tutorial', 'bots'];
+                showSection(sections[parseInt(e.key) - 1]);
+            }
+            if (e.key === 'Escape') document.getElementById('toast').classList.remove('show');
+        });
+
+        // =============================================
+        // TIC-TAC-TOE
+        // =============================================
+        let tttBoard = ['', '', '', '', '', '', '', '', ''];
+        let tttPlayer = 'x';
+        let tttGameOver = false;
+        let tttMode = 'two-player';
+
+        function initTicTacToe() {
+            const board = document.getElementById('tttBoard');
+            board.innerHTML = '';
+            for (let i = 0; i < 9; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'cell';
+                cell.dataset.index = i;
+                cell.addEventListener('click', () => handleTTT(i));
+                board.appendChild(cell);
+            }
+            resetTicTacToe();
+        }
+
+        function resetTicTacToe() {
+            tttBoard = ['', '', '', '', '', '', '', '', ''];
+            tttPlayer = 'x';
+            tttGameOver = false;
+            updateTTT();
+            document.getElementById('tttStatus').textContent = 'نوبت: ❌';
+        }
+
+        function setTTTMode(mode) {
+            tttMode = mode;
+            resetTicTacToe();
+            showToast('حالت بازی', mode === 'easy' ? 'کامپیوتر آسان' : mode === 'hard' ? 'کامپیوتر سخت' : 'دونفره');
+        }
+
+        function handleTTT(index) {
+            if (tttGameOver || tttBoard[index] !== '') return;
+            if (tttMode !== 'two-player' && tttPlayer === 'o') return;
+
+            tttBoard[index] = tttPlayer;
+            const winner = checkTTT();
+            if (winner) {
+                tttGameOver = true;
+                updateTTT();
+                document.getElementById('tttStatus').textContent = winner === 'x' ? '❌ برنده شد!' : '⭕ برنده شد!';
+                showToast('🎉 برنده', winner === 'x' ? 'بازیکن ❌ برنده شد' : 'بازیکن ⭕ برنده شد');
+                return;
+            }
+            if (!tttBoard.includes('')) {
+                tttGameOver = true;
+                updateTTT();
+                document.getElementById('tttStatus').textContent = '🤝 مساوی!';
+                showToast('🤝 مساوی', 'بازی مساوی شد');
+                return;
+            }
+
+            tttPlayer = tttPlayer === 'x' ? 'o' : 'x';
+            updateTTT();
+            document.getElementById('tttStatus').textContent = `نوبت: ${tttPlayer === 'x' ? '❌' : '⭕'}`;
+
+            if (tttMode !== 'two-player' && tttPlayer === 'o') {
+                setTimeout(computerTTT, 500);
+            }
+        }
+
+        function computerTTT() {
+            if (tttGameOver) return;
+            let move;
+            const empty = tttBoard.map((v, i) => v === '' ? i : null).filter(v => v !== null);
+            if (tttMode === 'easy') {
+                move = empty[Math.floor(Math.random() * empty.length)];
+            } else {
+                let bestScore = -Infinity;
+                for (const i of empty) {
+                    tttBoard[i] = 'o';
+                    const score = minimax(tttBoard, 0, false);
+                    tttBoard[i] = '';
+                    if (score > bestScore) { bestScore = score;
+                        move = i; }
+                }
+            }
+            if (move !== undefined && tttBoard[move] === '') handleTTT(move);
+        }
+
+        function minimax(board, depth, isMax) {
+            const w = checkTTTBoard(board);
+            if (w === 'o') return 10 - depth;
+            if (w === 'x') return depth - 10;
+            if (!board.includes('')) return 0;
+
+            if (isMax) {
+                let best = -Infinity;
+                for (let i = 0; i < 9; i++) {
+                    if (board[i] === '') { board[i] = 'o';
+                        best = Math.max(best, minimax(board, depth + 1, false));
+                        board[i] = ''; }
+                }
+                return best;
+            } else {
+                let best = Infinity;
+                for (let i = 0; i < 9; i++) {
+                    if (board[i] === '') { board[i] = 'x';
+                        best = Math.min(best, minimax(board, depth + 1, true));
+                        board[i] = ''; }
+                }
+                return best;
+            }
+        }
+
+        function checkTTTBoard(board) {
+            const wins = [
+                [0, 1, 2],
+                [3, 4, 5],
+                [6, 7, 8],
+                [0, 3, 6],
+                [1, 4, 7],
+                [2, 5, 8],
+                [0, 4, 8],
+                [2, 4, 6]
+            ];
+            for (const w of wins) {
+                if (board[w[0]] && board[w[0]] === board[w[1]] && board[w[0]] === board[w[2]]) return board[w[0]];
+            }
+            return null;
+        }
+
+        function checkTTT() { return checkTTTBoard(tttBoard); }
+
+        function updateTTT() {
+            const cells = document.querySelectorAll('#tttBoard .cell');
+            cells.forEach((cell, i) => {
+                cell.textContent = tttBoard[i] === 'x' ? '❌' : tttBoard[i] === 'o' ? '⭕' : '';
+                cell.className = 'cell';
+                if (tttBoard[i] === 'x') cell.classList.add('x');
+                if (tttBoard[i] === 'o') cell.classList.add('o');
+            });
+        }
+
+        // =============================================
+        // SNAKE
+        // =============================================
+        let snakeCanvas, ctx;
+        let snake = [];
+        let snakeDir = 'right';
+        let snakeNextDir = 'right';
+        let snakeFood = {};
+        let snakeScore = 0;
+        let snakeRunning = false;
+        let snakeLoop = null;
+        const S_SIZE = 20;
+
+        function initSnake() {
+            snakeCanvas = document.getElementById('snakeCanvas');
+            ctx = snakeCanvas.getContext('2d');
+            const rect = snakeCanvas.getBoundingClientRect();
+            const size = Math.min(rect.width, rect.height, 450);
+            snakeCanvas.width = size;
+            snakeCanvas.height = size;
+            resetSnakeGame();
+        }
+
+        function resetSnakeGame() {
+            if (snakeLoop) { clearInterval(snakeLoop);
+                snakeLoop = null; }
+            const size = snakeCanvas.width;
+            const cellSize = size / S_SIZE;
+            const mid = Math.floor(S_SIZE / 2);
+            snake = [{ x: mid, y: mid }, { x: mid - 1, y: mid }, { x: mid - 2, y: mid }];
+            snakeDir = 'right';
+            snakeNextDir = 'right';
+            snakeScore = 0;
+            snakeRunning = false;
+            spawnFood();
+            drawSnake();
+            document.getElementById('snakeStatus').textContent = 'امتیاز: ۰';
+        }
+
+        function spawnFood() {
+            const max = S_SIZE;
+            let pos;
+            do {
+                pos = { x: Math.floor(Math.random() * max), y: Math.floor(Math.random() * max) };
+            } while (snake.some(s => s.x === pos.x && s.y === pos.y));
+            snakeFood = pos;
+        }
+
+        function drawSnake() {
+            const size = snakeCanvas.width;
+            const cellSize = size / S_SIZE;
+            ctx.clearRect(0, 0, size, size);
+
+            ctx.strokeStyle = 'rgba(255,255,255,0.03)';
+            ctx.lineWidth = 0.5;
+            for (let i = 0; i <= S_SIZE; i++) {
+                ctx.beginPath();
+                ctx.moveTo(i * cellSize, 0);
+                ctx.lineTo(i * cellSize, size);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(0, i * cellSize);
+                ctx.lineTo(size, i * cellSize);
+                ctx.stroke();
+            }
+
+            ctx.fillStyle = '#ff6b6b';
+            ctx.shadowColor = '#ff6b6b';
+            ctx.shadowBlur = 12;
+            ctx.beginPath();
+            ctx.arc(snakeFood.x * cellSize + cellSize / 2, snakeFood.y * cellSize + cellSize / 2, cellSize / 2 - 2, 0, Math.PI *
+                2);
+            ctx.fill();
+            ctx.shadowBlur = 0;
+
+            snake.forEach((seg, i) => {
+                const p = i / snake.length;
+                const hue = 140 + p * 40;
+                ctx.fillStyle = `hsl(${hue}, 80%, ${60 - p * 20}%)`;
+                ctx.shadowColor = 'rgba(0,212,255,0.2)';
+                ctx.shadowBlur = 8;
+                const x = seg.x * cellSize + 1,
+                    y = seg.y * cellSize + 1,
+                    w = cellSize - 2,
+                    h = cellSize - 2,
+                    r = 4;
+                ctx.beginPath();
+                ctx.moveTo(x + r, y);
+                ctx.lineTo(x + w - r, y);
+                ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+                ctx.lineTo(x + w, y + h - r);
+                ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+                ctx.lineTo(x + r, y + h);
+                ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+                ctx.lineTo(x, y + r);
+                ctx.quadraticCurveTo(x, y, x + r, y);
+                ctx.fill();
+                ctx.shadowBlur = 0;
+
+                if (i === 0) {
+                    ctx.fillStyle = 'white';
+                    ctx.beginPath();
+                    ctx.arc(seg.x * cellSize + cellSize * 0.3, seg.y * cellSize + cellSize * 0.3, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(seg.x * cellSize + cellSize * 0.7, seg.y * cellSize + cellSize * 0.3, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#0a0a1a';
+                    ctx.beginPath();
+                    ctx.arc(seg.x * cellSize + cellSize * 0.3, seg.y * cellSize + cellSize * 0.3, 1.5, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(seg.x * cellSize + cellSize * 0.7, seg.y * cellSize + cellSize * 0.3, 1.5, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            });
+        }
+
+        function updateSnake() {
+            if (!snakeRunning) return;
+            snakeDir = snakeNextDir;
+            const head = { ...snake[0] };
+            switch (snakeDir) {
+                case 'up':
+                    head.y--;
+                    break;
+                case 'down':
+                    head.y++;
+                    break;
+                case 'left':
+                    head.x--;
+                    break;
+                case 'right':
+                    head.x++;
+                    break;
+            }
+            if (head.x < 0 || head.x >= S_SIZE || head.y < 0 || head.y >= S_SIZE) { gameOverSnake(); return; }
+            if (snake.some(s => s.x === head.x && s.y === head.y)) { gameOverSnake(); return; }
+
+            snake.unshift(head);
+            if (head.x === snakeFood.x && head.y === snakeFood.y) {
+                snakeScore++;
+                document.getElementById('snakeStatus').textContent = `امتیاز: ${snakeScore}`;
+                spawnFood();
+                if (snakeScore % 5 === 0) showToast('🌟 پیشرفت', `امتیاز ${snakeScore}!`);
+            } else {
+                snake.pop();
+            }
+            drawSnake();
+        }
+
+        function gameOverSnake() {
+            snakeRunning = false;
+            if (snakeLoop) { clearInterval(snakeLoop);
+                snakeLoop = null; }
+            showToast('💀 بازی تمام شد', `امتیاز نهایی: ${snakeScore}`);
+            document.getElementById('snakeStatus').textContent = `بازی تمام شد! امتیاز: ${snakeScore}`;
+        }
+
+        function startSnake() {
+            if (snakeRunning) return;
+            if (!snake.length) resetSnakeGame();
+            snakeRunning = true;
+            if (snakeLoop) clearInterval(snakeLoop);
+            snakeLoop = setInterval(updateSnake, 150);
+        }
+
+        function pauseSnake() {
+            snakeRunning = false;
+            if (snakeLoop) { clearInterval(snakeLoop);
+                snakeLoop = null; }
+            document.getElementById('snakeStatus').textContent = '⏸ متوقف شد';
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (!snakeRunning) return;
+            const map = { 'ArrowUp': 'up', 'ArrowDown': 'down', 'ArrowLeft': 'left', 'ArrowRight': 'right' };
+            const opp = { 'up': 'down', 'down': 'up', 'left': 'right', 'right': 'left' };
+            if (map[e.key] && opp[map[e.key]] !== snakeDir) {
+                e.preventDefault();
+                snakeNextDir = map[e.key];
+            }
+        });
+
+        // =============================================
+        // CHESS
+        // =============================================
+        let chessBoard = [];
+        let chessTurn = 'white';
+        let chessSelected = null;
+        let chessValid = [];
+        let chessMode = 'two-player';
+        let chessOver = false;
+
+        const PIECES = {
+            'white': { 'king': '♔', 'queen': '♕', 'rook': '♖', 'bishop': '♗', 'knight': '♘', 'pawn': '♙' },
+            'black': { 'king': '♚', 'queen': '♛', 'rook': '♜', 'bishop': '♝', 'knight': '♞', 'pawn': '♟' }
+        };
+
+        function initChess() { resetChess(); }
+
+        function resetChess() {
+            chessBoard = [];
+            chessTurn = 'white';
+            chessSelected = null;
+            chessValid = [];
+            chessOver = false;
+            const back = ['rook', 'knight', 'bishop', 'queen', 'king', 'bishop', 'knight', 'rook'];
+            for (let r = 0; r < 8; r++) {
+                chessBoard[r] = [];
+                for (let c = 0; c < 8; c++) {
+                    if (r === 0) chessBoard[r][c] = { type: back[c], color: 'black' };
+                    else if (r === 1) chessBoard[r][c] = { type: 'pawn', color: 'black' };
+                    else if (r === 6) chessBoard[r][c] = { type: 'pawn', color: 'white' };
+                    else if (r === 7) chessBoard[r][c] = { type: back[c], color: 'white' };
+                    else chessBoard[r][c] = null;
+                }
+            }
+            renderChess();
+            document.getElementById('chessStatus').textContent = 'نوبت: سفید';
+        }
+
+        function setChessMode(mode) {
+            chessMode = mode;
+            resetChess();
+            showToast('حالت بازی', mode === 'computer' ? 'با کامپیوتر' : 'دونفره');
+        }
+
+        function renderChess() {
+            const board = document.getElementById('chessBoard');
+            board.innerHTML = '';
+            for (let r = 0; r < 8; r++) {
+                for (let c = 0; c < 8; c++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.classList.add((r + c) % 2 === 0 ? 'chess-white' : 'chess-black');
+                    cell.dataset.row = r;
+                    cell.dataset.col = c;
+                    const p = chessBoard[r][c];
+                    if (p) { cell.textContent = PIECES[p.color][p.type];
+                        cell.classList.add('chess-piece'); }
+                    if (chessSelected && chessSelected.row === r && chessSelected.col === c) cell.classList.add('selected');
+                    if (chessValid.some(m => m.row === r && m.col === c)) cell.classList.add('valid-move');
+                    cell.addEventListener('click', () => handleChess(r, c));
+                    board.appendChild(cell);
+                }
+            }
+        }
+
+        function handleChess(row, col) {
+            if (chessOver) return;
+            if (chessMode === 'computer' && chessTurn === 'black') return;
+
+            const piece = chessBoard[row][col];
+            if (chessSelected) {
+                if (chessValid.some(m => m.row === row && m.col === col)) {
+                    makeChessMove(chessSelected.row, chessSelected.col, row, col);
+                    return;
+                }
+            }
+            if (piece && piece.color === chessTurn) {
+                chessSelected = { row, col };
+                chessValid = getChessMoves(row, col);
+                renderChess();
+                return;
+            }
+            chessSelected = null;
+            chessValid = [];
+            renderChess();
+        }
+
+        function getChessMoves(row, col) {
+            const p = chessBoard[row][col];
+            if (!p) return [];
+            const moves = [];
+            const color = p.color,
+                enemy = color === 'white' ? 'black' : 'white';
+
+            const add = (r, c) => {
+                if (r < 0 || r > 7 || c < 0 || c > 7) return false;
+                const t = chessBoard[r][c];
+                if (t && t.color === color) return false;
+                moves.push({ row: r, col: c });
+                return !t;
+            };
+
+            switch (p.type) {
+                case 'pawn': {
+                    const dir = color === 'white' ? -1 : 1;
+                    const start = color === 'white' ? 6 : 1;
+                    if (row + dir >= 0 && row + dir <= 7 && !chessBoard[row + dir][col]) {
+                        moves.push({ row: row + dir, col });
+                        if (row === start && !chessBoard[row + 2 * dir][col]) moves.push({ row: row + 2 * dir, col });
+                    }
+                    for (const dc of [-1, 1]) {
+                        const nc = col + dc;
+                        if (nc >= 0 && nc <= 7 && row + dir >= 0 && row + dir <= 7) {
+                            const t = chessBoard[row + dir][nc];
+                            if (t && t.color === enemy) moves.push({ row: row + dir, col: nc });
+                        }
+                    }
+                    break;
+                }
+                case 'knight':
+                    for (const [dr, dc] of [
+                            [-2, -1],
+                            [-2, 1],
+                            [-1, -2],
+                            [-1, 2],
+                            [1, -2],
+                            [1, 2],
+                            [2, -1],
+                            [2, 1]
+                        ]) add(row + dr, col + dc);
+                    break;
+                case 'bishop':
+                    for (const [dr, dc] of [
+                            [-1, -1],
+                            [-1, 1],
+                            [1, -1],
+                            [1, 1]
+                        ])
+                        for (let i = 1; i < 8; i++)
+                            if (!add(row + dr * i, col + dc * i)) break;
+                    break;
+                case 'rook':
+                    for (const [dr, dc] of [
+                            [-1, 0],
+                            [1, 0],
+                            [0, -1],
+                            [0, 1]
+                        ])
+                        for (let i = 1; i < 8; i++)
+                            if (!add(row + dr * i, col + dc * i)) break;
+                    break;
+                case 'queen':
+                    for (const [dr, dc] of [
+                            [-1, -1],
+                            [-1, 0],
+                            [-1, 1],
+                            [0, -1],
+                            [0, 1],
+                            [1, -1],
+                            [1, 0],
+                            [1, 1]
+                        ])
+                        for (let i = 1; i < 8; i++)
+                            if (!add(row + dr * i, col + dc * i)) break;
+                    break;
+                case 'king':
+                    for (const [dr, dc] of [
+                            [-1, -1],
+                            [-1, 0],
+                            [-1, 1],
+                            [0, -1],
+                            [0, 1],
+                            [1, -1],
+                            [1, 0],
+                            [1, 1]
+                        ]) add(row + dr, col + dc);
+                    break;
+            }
+            return moves;
+        }
+
+        function makeChessMove(fr, fc, tr, tc) {
+            const p = chessBoard[fr][fc];
+            chessBoard[tr][tc] = p;
+            chessBoard[fr][fc] = null;
+            if (p.type === 'pawn' && (tr === 0 || tr === 7)) {
+                chessBoard[tr][tc] = { type: 'queen', color: p.color };
+            }
+            chessSelected = null;
+            chessValid = [];
+
+            const king = findKing(chessTurn === 'white' ? 'black' : 'white');
+            if (king && isInCheck(king.row, king.col, chessTurn === 'white' ? 'black' : 'white')) {
+                if (!hasLegalMoves(chessTurn === 'white' ? 'black' : 'white')) {
+                    chessOver = true;
+                    document.getElementById('chessStatus').textContent = `🏆 ${chessTurn === 'white' ? 'سفید' : 'سیاه'} برنده شد!`;
+                    showToast('🏆 برنده', `${chessTurn === 'white' ? 'سفید' : 'سیاه'} شطرنج را برد!`);
+                    renderChess();
+                    return;
+                }
+            }
+
+            chessTurn = chessTurn === 'white' ? 'black' : 'white';
+            document.getElementById('chessStatus').textContent = `نوبت: ${chessTurn === 'white' ? 'سفید' : 'سیاه'}`;
+            renderChess();
+
+            if (chessMode === 'computer' && chessTurn === 'black' && !chessOver) {
+                setTimeout(computerChess, 500);
+            }
+        }
+
+        function findKing(color) {
+            for (let r = 0; r < 8; r++)
+                for (let c = 0; c < 8; c++) {
+                    const p = chessBoard[r][c];
+                    if (p && p.type === 'king' && p.color === color) return { row: r, col: c };
+                }
+            return null;
+        }
+
+        function isInCheck(row, col, color) {
+            const enemy = color === 'white' ? 'black' : 'white';
+            for (let r = 0; r < 8; r++)
+                for (let c = 0; c < 8; c++) {
+                    const p = chessBoard[r][c];
+                    if (p && p.color === enemy) {
+                        const moves = getChessMoves(r, c);
+                        if (moves.some(m => m.row === row && m.col === col)) return true;
+                    }
+                }
+            return false;
+        }
+
+        function hasLegalMoves(color) {
+            for (let r = 0; r < 8; r++)
+                for (let c = 0; c < 8; c++) {
+                    const p = chessBoard[r][c];
+                    if (p && p.color === color && getChessMoves(r, c).length > 0) return true;
+                }
+            return false;
+        }
+
+        function computerChess() {
+            if (chessOver || chessTurn !== 'black') return;
+            const allMoves = [];
+            for (let r = 0; r < 8; r++)
+                for (let c = 0; c < 8; c++) {
+                    const p = chessBoard[r][c];
+                    if (p && p.color === 'black') {
+                        const moves = getChessMoves(r, c);
+                        for (const m of moves) allMoves.push({ fr: r, fc: c, tr: m.row, tc: m.col });
+                    }
+                }
+            if (allMoves.length === 0) {
+                chessOver = true;
+                document.getElementById('chessStatus').textContent = '🏆 سفید برنده شد!';
+                showToast('🏆 برنده', 'سفید شطرنج را برد!');
+                return;
+            }
+            const captures = allMoves.filter(m => chessBoard[m.tr][m.tc]);
+            const move = captures.length > 0 ? captures[Math.floor(Math.random() * captures.length)] :
+                allMoves[Math.floor(Math.random() * allMoves.length)];
+            makeChessMove(move.fr, move.fc, move.tr, move.tc);
+        }
+
+        // =============================================
+        // BOT DETAILS
+        // =============================================
+        function showBotDetails(type) {
+            const details = document.getElementById('botDetails');
+            const title = document.getElementById('botDetailTitle');
+            const content = document.getElementById('botDetailContent');
+            details.style.display = 'block';
+
+            if (type === 'telegram') {
+                title.textContent = '📘 آموزش ساخت ربات تلگرام';
+                content.innerHTML = `
+                    <h3>🤖 ربات تلگرام با Python</h3>
+                    <ol style="padding-right:20px;margin:10px 0;color:rgba(255,255,255,0.8);">
+                        <li>به ربات <strong>@BotFather</strong> در تلگرام بروید</li>
+                        <li>دستور <code>/newbot</code> را ارسال کنید</li>
+                        <li>نام و شناسه ربات را انتخاب کنید</li>
+                        <li>توکن دریافتی را ذخیره کنید</li>
+                    </ol>
+                    <div class="code-block">
+                        from telegram import Update<br>
+                        from telegram.ext import Application, CommandHandler<br>
+                        <br>
+                        TOKEN = "YOUR_TOKEN"<br>
+                        <br>
+                        async def start(update, context):<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;await update.message.reply_text("سلام! 🚀")<br>
+                        <br>
+                        app = Application.builder().token(TOKEN).build()<br>
+                        app.add_handler(CommandHandler("start", start))<br>
+                        app.run_polling()
+                    </div>
+                    <button class="btn btn-accent mt-20" onclick="showToast('✅ ربات','آموزش تلگرام نمایش داده شد')">دریافت توکن</button>
+                `;
+            } else {
+                title.textContent = '📘 آموزش ساخت ربات بله';
+                content.innerHTML = `
+                    <h3>🤖 ربات بله با Python</h3>
+                    <ol style="padding-right:20px;margin:10px 0;color:rgba(255,255,255,0.8);">
+                        <li>به ربات <strong>@BaleBotFather</strong> در بله بروید</li>
+                        <li>دستور <code>/newbot</code> را ارسال کنید</li>
+                        <li>نام و شناسه ربات را انتخاب کنید</li>
+                        <li>توکن دریافتی را ذخیره کنید</li>
+                    </ol>
+                    <div class="code-block">
+                        from bale import Bot, Message<br>
+                        <br>
+                        TOKEN = "YOUR_TOKEN"<br>
+                        bot = Bot(token=TOKEN)<br>
+                        <br>
+                        @bot.on_message()<br>
+                        def handle(msg):<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;msg.reply_text("سلام! 🚀")<br>
+                        <br>
+                        bot.run()
+                    </div>
+                    <button class="btn btn-secondary mt-20" onclick="showToast('✅ ربات','آموزش بله نمایش داده شد')">دریافت توکن</button>
+                `;
+            }
+            details.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // =============================================
+        // INIT
+        // =============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            initTicTacToe();
+            initSnake();
+            initChess();
+            console.log('✅ پرهام لند با موفقیت بارگذاری شد!');
+            console.log('📊 تعداد المان‌ها:', document.querySelectorAll('*').length);
+        });
+    </script>
+
+</body>
+</html>
